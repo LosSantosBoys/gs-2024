@@ -1,5 +1,6 @@
 import 'package:app/app/core/enum/device_type_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
+import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:app/app/core/util.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -14,7 +15,9 @@ abstract class DeviceStoreBase with Store {
   TextEditingController device = TextEditingController();
   TextEditingController brand = TextEditingController();
   TextEditingController wattage = TextEditingController();
+  TextEditingController wattageStandby = TextEditingController();
   TextEditingController beginEnd = TextEditingController();
+  TextEditingController notes = TextEditingController();
 
   // Frequency fields
   TextEditingController chosenFrequency = TextEditingController(text: "Diariamente");
@@ -32,6 +35,9 @@ abstract class DeviceStoreBase with Store {
 
   @observable
   TimeOfDay? begin, end;
+
+  @observable
+  PriorityLevelEnum priority = PriorityLevelEnum.low;
 
   @action
   void setType(DeviceTypeEnum? value) {
@@ -84,6 +90,12 @@ abstract class DeviceStoreBase with Store {
   void setBeginEnd(BuildContext context) {
     if (begin != null && end != null) {
       beginEnd.text = '${begin!.format(context)} - ${end!.format(context)}';
+    }
+  }
+
+  void setPriority(PriorityLevelEnum? value) {
+    if (value != null) {
+      priority = value;
     }
   }
 
