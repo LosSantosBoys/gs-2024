@@ -431,7 +431,7 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      // Save device
+                      store.saveDevice(context);
                     }
                   },
                   child: const Text("Salvar"),

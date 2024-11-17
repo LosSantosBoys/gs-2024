@@ -1,8 +1,11 @@
+import 'package:app/app/core/entity/device.dart';
 import 'package:app/app/core/enum/device_type_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:app/app/core/util.dart';
+import 'package:app/app/features/devices/service/device_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 
 part 'device_store.g.dart';
@@ -10,6 +13,8 @@ part 'device_store.g.dart';
 class DeviceStore = DeviceStoreBase with _$DeviceStore;
 
 abstract class DeviceStoreBase with Store {
+  DeviceService service = Modular.get();
+
   TextEditingController name = TextEditingController();
   TextEditingController model = TextEditingController();
   TextEditingController device = TextEditingController();
@@ -99,7 +104,31 @@ abstract class DeviceStoreBase with Store {
     }
   }
 
-  void saveDevice() async {
-    // TODO: Implement saveDevice
+  void saveDevice(BuildContext context) async {
+    if (!context.mounted) {
+      return;
+    }
+
+    try {
+      final Device device = Device(
+        name: name.text,
+        type: type,
+        model: model.text,
+        brand: brand.text,
+        wattage: int.parse(wattage.text),
+        wattageStandby: int.parse(wattageStandby.text),
+        frequency: frequency,
+        timeOfUse: beginEnd.text,
+        priority: priority,
+        notes: notes.text,
+      );
+
+      // Save device
+      service.saveDevice(device);
+      context.showSnackBarSuccess(message: "Dispositivo salvo com sucesso.");
+    } catch (e) {
+      print(e);
+      context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
+    }
   }
 }
