@@ -1,5 +1,6 @@
 import 'package:app/app/core/enum/device_type_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
+import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:app/app/core/util.dart';
 import 'package:app/app/features/devices/store/device_store.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 items: DeviceTypeEnum.values.map((DeviceTypeEnum device) {
                   return DropdownMenuItem(
                     value: device,
-                    child: Text(device.readable),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(device.icon),
+                        const SizedBox(width: 10),
+                        Text(device.readable),
+                      ],
+                    ),
                   );
                 }).toList(),
                 value: store.type,
@@ -152,6 +160,20 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 ),
               ),
               const SizedBox(height: 15),
+              const Text("Consumo em watts em stand-by"),
+              const SizedBox(height: 5),
+              TextField(
+                controller: store.wattageStandby,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Consumo em watts em stand-by",
+                  suffixText: "W",
+                ),
+              ),
+              const SizedBox(height: 15),
               const Text("Frequência de uso"),
               const SizedBox(height: 5),
               TextFormField(
@@ -189,9 +211,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.week,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.week.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" vezes por semana"),
+                                    const Text(" vez(es) por semana"),
                                   ],
                                 ),
                                 value: FrequencyEnum.weekly,
@@ -210,9 +237,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.month,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.month.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" vezes por mês"),
+                                    const Text(" vez(es) por mês"),
                                   ],
                                 ),
                                 value: FrequencyEnum.monthly,
@@ -355,6 +387,42 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 },
                 decoration: const InputDecoration(
                   hintText: "Horário de uso",
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Text("Nível de Prioridade"),
+              const SizedBox(height: 5),
+              DropdownButtonFormField<PriorityLevelEnum>(
+                items: PriorityLevelEnum.values.map((PriorityLevelEnum priority) {
+                  return DropdownMenuItem(
+                    value: priority,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(priority.icon, color: priority.color),
+                        const SizedBox(width: 10),
+                        Text(priority.readable),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: store.setPriority,
+                value: store.priority,
+              ),
+              const SizedBox(height: 15),
+              const Text("Notas"),
+              const SizedBox(height: 5),
+              SizedBox(
+                height: 150,
+                child: TextField(
+                  controller: store.notes,
+                  keyboardType: TextInputType.multiline,
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    hintText: "Notas",
+                  ),
+                  expands: true,
                 ),
               ),
               const SizedBox(height: 15),
