@@ -25,7 +25,7 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
   void initState() {
     super.initState();
 
-    if (widget.id != null) {
+    if (widget.id != "new") {
       store.loadDevice(widget.id!);
     }
   }
@@ -34,7 +34,7 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.id != null ? 'Editar' : 'Salvar'} dispositivo"),
+        title: Text("${widget.id != "new" ? 'Editar' : 'Salvar'} dispositivo"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -469,10 +469,10 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                       Modular.to.pop();
                     }
                   },
-                  child: Text(widget.id != null ? "Atualizar" : "Salvar"),
+                  child: Text(widget.id != "new" ? "Atualizar" : "Salvar"),
                 ),
               ),
-              if (widget.id != null)
+              if (widget.id != "new")
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
