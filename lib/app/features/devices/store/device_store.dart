@@ -4,6 +4,7 @@ import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:app/app/core/util.dart';
 import 'package:app/app/features/devices/service/device_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
@@ -109,6 +110,18 @@ abstract class DeviceStoreBase with Store {
       return;
     }
 
+    int? frequencyTimes;
+    int? frequencyDays;
+
+    if (frequency == FrequencyEnum.monthly) {
+      frequencyTimes = int.tryParse(month.text) ?? 1;
+    } else if (frequency == FrequencyEnum.weekly) {
+      frequencyTimes = int.tryParse(week.text) ?? 1;
+    } else {
+      frequencyTimes = int.tryParse(times.text) ?? 1;
+      frequencyDays = int.tryParse(days.text) ?? 1;
+    }
+
     try {
       final Device device = Device(
         name: name.text,
@@ -118,6 +131,8 @@ abstract class DeviceStoreBase with Store {
         wattage: int.parse(wattage.text),
         wattageStandby: int.parse(wattageStandby.text),
         frequency: frequency,
+        frequencyTimes: frequencyTimes,
+        frequencyDays: frequencyDays,
         timeOfUse: beginEnd.text,
         priority: priority,
         notes: notes.text,
@@ -127,8 +142,48 @@ abstract class DeviceStoreBase with Store {
       service.saveDevice(device);
       context.showSnackBarSuccess(message: "Dispositivo salvo com sucesso.");
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+
       context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
     }
+  }
+
+  @action
+  Future<void> loadDevice(String id) async {
+    final Device? device = await service.getDevice(int.tryParse(id) ?? 0);
+
+    if (device == null) {
+      return;
+    }
+
+    name.text = device.name;
+    type = device.type;
+    model.text = device.model;
+    brand.text = device.brand;
+    wattage.text = device.wattage.toString();
+    wattageStandby.text = device.wattageStandby.toString();
+    frequency = device.frequency;
+    beginEnd.text = device.timeOfUse;
+
+    String? frequencyTimes = device.frequencyTimes?.toString() ?? '1';
+    String? frequencyDays = device.frequencyDays?.toString() ?? '1';
+
+    if (frequency == FrequencyEnum.monthly) {
+      month.text = frequencyTimes;
+    } else if (frequency == FrequencyEnum.weekly) {
+      week.text = frequencyTimes;
+    } else {
+      days.text = frequencyDays;
+      times.text = frequencyTimes;
+    }
+
+    List<String> timesOfUse = device.timeOfUse.split(' - ');
+    setBeginTime(TimeOfDay.fromDateTime(string2DateTime(timesOfUse[0])));
+    setEndTime(TimeOfDay.fromDateTime(string2DateTime(timesOfUse[1])));
+
+    priority = device.priority;
+    notes.text = device.notes;
   }
 }
