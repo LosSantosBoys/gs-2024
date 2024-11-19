@@ -1,9 +1,10 @@
+import 'package:app/app/core/dao/device_dao.dart';
 import 'package:app/app/core/database.dart';
 import 'package:app/app/core/entity/device.dart';
 
 abstract class DeviceService {
   Future<void> saveDevice(Device device);
-  Future<void> deleteDevice(Device device);
+  Future<void> deleteDevice(int id);
   Future<void> updateDevice(Device device);
   Future<List<Device>> getDevices();
   Future<Device?> getDevice(int id);
@@ -11,11 +12,17 @@ abstract class DeviceService {
 
 class DeviceServiceImpl implements DeviceService {
   @override
-  Future<void> deleteDevice(Device device) async {
+  Future<void> deleteDevice(int id) async {
     try {
-      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+      final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final deviceDao = database.deviceDao;
+      final DeviceDao deviceDao = database.deviceDao;
+      final Device? device = await deviceDao.findDeviceById(id);
+
+      if (device == null) {
+        return;
+      }
+
       await deviceDao.deleteDevice(device);
     } catch (e) {
       rethrow;
