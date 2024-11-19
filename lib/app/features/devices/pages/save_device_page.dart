@@ -34,7 +34,7 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Adicionar dispositivo"),
+        title: Text("${widget.id != null ? 'Editar' : 'Salvar'} dispositivo"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -465,12 +465,59 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      store.saveDevice(context);
+                      store.saveDevice(context, id: widget.id);
+                      Modular.to.pop();
                     }
                   },
-                  child: const Text("Salvar"),
+                  child: Text(widget.id != null ? "Atualizar" : "Salvar"),
                 ),
               ),
+              if (widget.id != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Excluir dispositivo"),
+                                content: const Text("Tem certeza que deseja excluir este dispositivo?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: Modular.to.pop,
+                                    child: const Text("Cancelar"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => store.deleteDevice(widget.id!, context),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                    ),
+                                    child: const Text(
+                                      "Excluir",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: const Text(
+                          "Excluir",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
