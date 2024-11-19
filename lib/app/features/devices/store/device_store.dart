@@ -179,6 +179,7 @@ abstract class DeviceStoreBase with Store {
         context.showSnackBarSuccess(message: "Dispositivo deletado com sucesso.");
       }
 
+      clear();
       Modular.to.pushReplacementNamed('/devices/');
     } catch (e) {
       if (kDebugMode) {
