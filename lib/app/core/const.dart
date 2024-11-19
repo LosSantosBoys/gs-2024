@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Cores do tema do aplicativo
 class ThemeColors {
   static const Color primaryDarkest = Color(0xFF3755C1);
   static const Color primaryDark = Color(0xFF4b67c8);
