@@ -26,7 +26,9 @@ Após instalar o Flutter, clone o repositório e instale as dependências do pro
 ```bash
 git clone https://github.com/LosSantosBoys/gs-2024.git
 cd gs-2024
+
 flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 Para rodar o projeto, execute o seguinte comando:
