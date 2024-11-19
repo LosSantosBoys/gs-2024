@@ -6,17 +6,29 @@ import 'package:app/app/features/devices/store/device_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class SaveDevicePage extends StatefulWidget {
-  const SaveDevicePage({super.key});
+  const SaveDevicePage({super.key, this.id});
+
+  final String? id;
 
   @override
   State<SaveDevicePage> createState() => _SaveDevicePageState();
 }
 
 class _SaveDevicePageState extends State<SaveDevicePage> {
-  final DeviceStore store = DeviceStore();
+  final DeviceStore store = Modular.get<DeviceStore>();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.id != null) {
+      store.loadDevice(widget.id!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -331,6 +343,12 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         final time = await showTimePicker(
                                           context: context,
                                           initialTime: const TimeOfDay(hour: 0, minute: 0),
+                                          builder: (context, child) {
+                                            return MediaQuery(
+                                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                              child: child!,
+                                            );
+                                          },
                                         );
 
                                         if (time != null) {
@@ -356,6 +374,12 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         final time = await showTimePicker(
                                           context: context,
                                           initialTime: const TimeOfDay(hour: 23, minute: 59),
+                                          builder: (context, child) {
+                                            return MediaQuery(
+                                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                              child: child!,
+                                            );
+                                          },
                                         );
 
                                         if (time != null) {
