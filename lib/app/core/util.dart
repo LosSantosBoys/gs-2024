@@ -275,7 +275,7 @@ extension ShowSnackBar on BuildContext {
             Icon(icon, color: iconColor),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(message),
+              child: Text(message, style: TextStyle(color: iconColor)),
             ),
           ],
         ),
@@ -310,7 +310,7 @@ extension ShowSnackBar on BuildContext {
             Icon(icon, color: iconColor),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(message),
+              child: Text(message, style: TextStyle(color: iconColor)),
             ),
           ],
         ),
