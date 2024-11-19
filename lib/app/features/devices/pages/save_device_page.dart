@@ -275,9 +275,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.times,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.times.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" vezes em "),
+                                    const Text(" vez(es) em "),
                                     Expanded(
                                       child: TextField(
                                         inputFormatters: [
@@ -285,9 +290,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.days,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.days.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" dias"),
+                                    const Text(" dia(s)"),
                                   ],
                                 ),
                                 value: FrequencyEnum.custom,
