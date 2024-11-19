@@ -1,6 +1,7 @@
 import 'package:app/app/features/devices/devices_module.dart';
 import 'package:app/app/features/devices/service/device_service.dart';
 import 'package:app/app/features/devices/store/device_store.dart';
+import 'package:app/app/features/home/home_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AppModule extends Module {
@@ -12,6 +13,7 @@ class AppModule extends Module {
 
   @override
   void routes(r) {
-    r.module('/', module: DevicesModule());
+    r.module('/', module: HomeModule());
+    r.module('/devices', module: DevicesModule());
   }
 }
