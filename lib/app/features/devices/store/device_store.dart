@@ -4,6 +4,7 @@ import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:app/app/core/util.dart';
 import 'package:app/app/features/devices/service/device_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
@@ -43,6 +44,12 @@ abstract class DeviceStoreBase with Store {
 
   @observable
   PriorityLevelEnum priority = PriorityLevelEnum.low;
+
+  @observable
+  ObservableList<Device> devices = ObservableList<Device>();
+
+  @observable
+  bool loading = false;
 
   @action
   void setType(DeviceTypeEnum? value) {
@@ -104,13 +111,22 @@ abstract class DeviceStoreBase with Store {
     }
   }
 
-  void saveDevice(BuildContext context) async {
-    if (!context.mounted) {
-      return;
+  void saveDevice(BuildContext context, {String? id}) async {
+    int? frequencyTimes;
+    int? frequencyDays;
+
+    if (frequency == FrequencyEnum.monthly) {
+      frequencyTimes = int.tryParse(month.text) ?? 1;
+    } else if (frequency == FrequencyEnum.weekly) {
+      frequencyTimes = int.tryParse(week.text) ?? 1;
+    } else {
+      frequencyTimes = int.tryParse(times.text) ?? 1;
+      frequencyDays = int.tryParse(days.text) ?? 1;
     }
 
     try {
       final Device device = Device(
+        id: id != null ? int.tryParse(id) : null,
         name: name.text,
         type: type,
         model: model.text,
@@ -118,17 +134,135 @@ abstract class DeviceStoreBase with Store {
         wattage: int.parse(wattage.text),
         wattageStandby: int.parse(wattageStandby.text),
         frequency: frequency,
+        frequencyTimes: frequencyTimes,
+        frequencyDays: frequencyDays,
         timeOfUse: beginEnd.text,
         priority: priority,
         notes: notes.text,
       );
 
-      // Save device
-      service.saveDevice(device);
-      context.showSnackBarSuccess(message: "Dispositivo salvo com sucesso.");
+      String message = "Dispositivo salvo com sucesso.";
+
+      if (device.id == null) {
+        // Save device
+        service.saveDevice(device);
+      } else {
+        // Update device
+        service.updateDevice(device);
+        message = "Dispositivo atualizado com sucesso.";
+      }
+
+      if (context.mounted) {
+        context.showSnackBarSuccess(message: message);
+      }
+
+      clear();
+      await getDevices();
     } catch (e) {
-      print(e);
-      context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+
+      if (context.mounted) {
+        context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
+      }
+    }
+  }
+
+  @action
+  Future<void> deleteDevice(String id, BuildContext context) async {
+    try {
+      await service.deleteDevice(int.parse(id));
+      await getDevices();
+
+      if (context.mounted) {
+        context.showSnackBarSuccess(message: "Dispositivo deletado com sucesso.");
+      }
+
+      clear();
+      Modular.to.pushReplacementNamed('/devices/');
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+
+      if (context.mounted) {
+        context.showSnackBarError(message: "Erro ao deletar dispositivo. Tente novamente.");
+      }
+    }
+  }
+
+  @action
+  Future<void> loadDevice(String id) async {
+    final Device? device = await service.getDevice(int.tryParse(id) ?? 0);
+
+    if (device == null) {
+      return;
+    }
+    clear();
+
+    name.text = device.name;
+    type = device.type;
+    model.text = device.model;
+    brand.text = device.brand;
+    wattage.text = device.wattage.toString();
+    wattageStandby.text = device.wattageStandby.toString();
+    frequency = device.frequency;
+    beginEnd.text = device.timeOfUse;
+
+    String? frequencyTimes = device.frequencyTimes?.toString() ?? '1';
+    String? frequencyDays = device.frequencyDays?.toString() ?? '1';
+    chosenFrequency.text = frequency.readable(times: frequencyTimes, days: frequencyDays);
+
+    if (frequency == FrequencyEnum.monthly) {
+      month.text = frequencyTimes;
+    } else if (frequency == FrequencyEnum.weekly) {
+      week.text = frequencyTimes;
+    } else {
+      days.text = frequencyDays;
+      times.text = frequencyTimes;
+    }
+
+    List<String> timesOfUse = device.timeOfUse.split(' - ');
+    setBeginTime(TimeOfDay.fromDateTime(string2DateTime(timesOfUse[0])));
+    setEndTime(TimeOfDay.fromDateTime(string2DateTime(timesOfUse[1])));
+
+    priority = device.priority;
+    notes.text = device.notes;
+  }
+
+  @action
+  void clear() {
+    name.clear();
+    type = DeviceTypeEnum.light;
+    model.clear();
+    brand.clear();
+    wattage.clear();
+    wattageStandby.clear();
+    frequency = FrequencyEnum.daily;
+    chosenFrequency.text = "Diariamente";
+    week.clear();
+    month.clear();
+    times.clear();
+    days.clear();
+    beginEnd.clear();
+    begin = null;
+    end = null;
+    priority = PriorityLevelEnum.low;
+    notes.clear();
+  }
+
+  @action
+  Future<void> getDevices() async {
+    try {
+      loading = true;
+      devices.clear();
+      devices.addAll(await service.getDevices());
+      loading = false;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
     }
   }
 }

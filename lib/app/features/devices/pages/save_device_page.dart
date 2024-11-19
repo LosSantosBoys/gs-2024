@@ -6,23 +6,35 @@ import 'package:app/app/features/devices/store/device_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class SaveDevicePage extends StatefulWidget {
-  const SaveDevicePage({super.key});
+  const SaveDevicePage({super.key, this.id});
+
+  final String? id;
 
   @override
   State<SaveDevicePage> createState() => _SaveDevicePageState();
 }
 
 class _SaveDevicePageState extends State<SaveDevicePage> {
-  final DeviceStore store = DeviceStore();
+  final DeviceStore store = Modular.get<DeviceStore>();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.id != "new") {
+      store.loadDevice(widget.id!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Adicionar dispositivo"),
+        title: Text("${widget.id != "new" ? 'Editar' : 'Salvar'} dispositivo"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -263,9 +275,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.times,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.times.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" vezes em "),
+                                    const Text(" vez(es) em "),
                                     Expanded(
                                       child: TextField(
                                         inputFormatters: [
@@ -273,9 +290,14 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         ],
                                         keyboardType: TextInputType.number,
                                         controller: store.days,
+                                        onChanged: (String? value) {
+                                          if (value?.isEmpty ?? true) {
+                                            store.days.text = '1';
+                                          }
+                                        },
                                       ),
                                     ),
-                                    const Text(" dias"),
+                                    const Text(" dia(s)"),
                                   ],
                                 ),
                                 value: FrequencyEnum.custom,
@@ -331,6 +353,12 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         final time = await showTimePicker(
                                           context: context,
                                           initialTime: const TimeOfDay(hour: 0, minute: 0),
+                                          builder: (context, child) {
+                                            return MediaQuery(
+                                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                              child: child!,
+                                            );
+                                          },
                                         );
 
                                         if (time != null) {
@@ -356,6 +384,12 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                                         final time = await showTimePicker(
                                           context: context,
                                           initialTime: const TimeOfDay(hour: 23, minute: 59),
+                                          builder: (context, child) {
+                                            return MediaQuery(
+                                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                              child: child!,
+                                            );
+                                          },
                                         );
 
                                         if (time != null) {
@@ -431,12 +465,59 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      store.saveDevice(context);
+                      store.saveDevice(context, id: widget.id);
+                      Modular.to.pop();
                     }
                   },
-                  child: const Text("Salvar"),
+                  child: Text(widget.id != "new" ? "Atualizar" : "Salvar"),
                 ),
               ),
+              if (widget.id != "new")
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Excluir dispositivo"),
+                                content: const Text("Tem certeza que deseja excluir este dispositivo?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: Modular.to.pop,
+                                    child: const Text("Cancelar"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => store.deleteDevice(widget.id!, context),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                    ),
+                                    child: const Text(
+                                      "Excluir",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: const Text(
+                          "Excluir",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
