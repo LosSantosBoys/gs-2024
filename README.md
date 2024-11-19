@@ -14,7 +14,7 @@ MyEnergy é um aplicativo móvel projetado para ajudar os usuários a gerenciar 
 - [MobX](https://pub.dev/packages/mobx) 2.4.0: Gerenciamento de estado reativo.
 
 ### Banco de Dados
-- Floor 1.5.0: ORM para SQLite.
+- [Floor](https://pub.dev/packages/floor) 1.5.0: ORM para SQLite.
 
 ## Arquitetura
 O projeto adota um padrão de design modular, promovendo alta coesão e baixo acoplamento ao organizar o aplicativo em módulos autocontidos e orientados a recursos. Isso garante escalabilidade, testabilidade e facilidade de manutenção conforme o aplicativo evolui.
