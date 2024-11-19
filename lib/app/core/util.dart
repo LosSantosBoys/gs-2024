@@ -210,3 +210,18 @@ extension ShowSnackBar on BuildContext {
     );
   }
 }
+
+DateTime string2DateTime(String time) {
+  bool isPM = time.contains('PM');
+  time = time.replaceAll('AM', '').replaceAll('PM', '');
+  
+  List<String> parts = time.split(':');
+  int hour = int.parse(parts[0]);
+  int minute = int.parse(parts[1]);
+  
+  if (isPM) {
+    hour += 12;
+  }
+
+  return DateTime(2021, 1, 1, hour, minute);
+}
