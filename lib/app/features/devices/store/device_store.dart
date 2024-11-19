@@ -45,6 +45,12 @@ abstract class DeviceStoreBase with Store {
   @observable
   PriorityLevelEnum priority = PriorityLevelEnum.low;
 
+  @observable
+  ObservableList<Device> devices = ObservableList<Device>();
+
+  @observable
+  bool loading = false;
+
   @action
   void setType(DeviceTypeEnum? value) {
     if (value != null) {
@@ -105,11 +111,7 @@ abstract class DeviceStoreBase with Store {
     }
   }
 
-  void saveDevice(BuildContext context) async {
-    if (!context.mounted) {
-      return;
-    }
-
+  void saveDevice(BuildContext context, {String? id}) async {
     int? frequencyTimes;
     int? frequencyDays;
 
@@ -124,6 +126,7 @@ abstract class DeviceStoreBase with Store {
 
     try {
       final Device device = Device(
+        id: id != null ? int.tryParse(id) : null,
         name: name.text,
         type: type,
         model: model.text,
@@ -138,15 +141,53 @@ abstract class DeviceStoreBase with Store {
         notes: notes.text,
       );
 
-      // Save device
-      service.saveDevice(device);
-      context.showSnackBarSuccess(message: "Dispositivo salvo com sucesso.");
+      String message = "Dispositivo salvo com sucesso.";
+
+      if (device.id == null) {
+        // Save device
+        service.saveDevice(device);
+      } else {
+        // Update device
+        service.updateDevice(device);
+        message = "Dispositivo atualizado com sucesso.";
+      }
+
+      if (context.mounted) {
+        context.showSnackBarSuccess(message: message);
+      }
+
+      clear();
+      await getDevices();
     } catch (e) {
       if (kDebugMode) {
         debugPrint(e.toString());
       }
 
-      context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
+      if (context.mounted) {
+        context.showSnackBarError(message: "Erro ao salvar dispositivo. Tente novamente.");
+      }
+    }
+  }
+
+  @action
+  Future<void> deleteDevice(String id, BuildContext context) async {
+    try {
+      await service.deleteDevice(int.parse(id));
+      await getDevices();
+
+      if (context.mounted) {
+        context.showSnackBarSuccess(message: "Dispositivo deletado com sucesso.");
+      }
+
+      Modular.to.pushReplacementNamed('/devices/');
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+
+      if (context.mounted) {
+        context.showSnackBarError(message: "Erro ao deletar dispositivo. Tente novamente.");
+      }
     }
   }
 
@@ -157,6 +198,7 @@ abstract class DeviceStoreBase with Store {
     if (device == null) {
       return;
     }
+    clear();
 
     name.text = device.name;
     type = device.type;
@@ -169,6 +211,7 @@ abstract class DeviceStoreBase with Store {
 
     String? frequencyTimes = device.frequencyTimes?.toString() ?? '1';
     String? frequencyDays = device.frequencyDays?.toString() ?? '1';
+    chosenFrequency.text = frequency.readable(times: frequencyTimes, days: frequencyDays);
 
     if (frequency == FrequencyEnum.monthly) {
       month.text = frequencyTimes;
@@ -185,5 +228,40 @@ abstract class DeviceStoreBase with Store {
 
     priority = device.priority;
     notes.text = device.notes;
+  }
+
+  @action
+  void clear() {
+    name.clear();
+    type = DeviceTypeEnum.light;
+    model.clear();
+    brand.clear();
+    wattage.clear();
+    wattageStandby.clear();
+    frequency = FrequencyEnum.daily;
+    chosenFrequency.text = "Diariamente";
+    week.clear();
+    month.clear();
+    times.clear();
+    days.clear();
+    beginEnd.clear();
+    begin = null;
+    end = null;
+    priority = PriorityLevelEnum.low;
+    notes.clear();
+  }
+
+  @action
+  Future<void> getDevices() async {
+    try {
+      loading = true;
+      devices.clear();
+      devices.addAll(await service.getDevices());
+      loading = false;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+    }
   }
 }
