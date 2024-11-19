@@ -1,5 +1,6 @@
 import 'package:app/app/features/configuration/pages/add_tariff_page.dart';
 import 'package:app/app/features/configuration/pages/clear_data_page.dart';
+import 'package:app/app/features/configuration/pages/list_tariff_page.dart';
 import 'package:flutter/material.dart';
 
 class ConfigurationPage extends StatelessWidget {
@@ -21,7 +22,18 @@ class ConfigurationPage extends StatelessWidget {
               () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AddTariffPage()),
+                  MaterialPageRoute(builder: (context) => const SaveTariffPage()),
+                );
+              },
+            ),
+            const Divider(),
+                        _buildConfigurationCard(
+              context,
+              'Listar Tarifas',
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ListTariffsPage()),
                 );
               },
             ),
