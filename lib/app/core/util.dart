@@ -225,3 +225,26 @@ DateTime string2DateTime(String time) {
 
   return DateTime(2021, 1, 1, hour, minute);
 }
+
+
+List<Map<String, dynamic>> differenceBetween(String input1, String input2) {
+  List<String> words1 = input1.split(' ');
+  List<String> words2 = input2.split(' ');
+  int maxLength = words1.length > words2.length ? words1.length : words2.length;
+
+  final List<Map<String, dynamic>> result = [];
+
+  for (int i = 0; i < maxLength; i++) {
+    final String word1 = i < words1.length ? words1[i] : '';
+    final String word2 = i < words2.length ? words2[i] : '';
+
+    if (word1 != word2) {
+      result.add({
+        'word1': word1,
+        'word2': word2,
+      });
+    }
+  }
+
+  return result;
+}
