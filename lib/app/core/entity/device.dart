@@ -15,6 +15,8 @@ class Device {
   final int wattage;
   final int wattageStandby;
   final FrequencyEnum frequency;
+  final int? frequencyDays;
+  final int? frequencyTimes;
   final String timeOfUse;
   final PriorityLevelEnum priority;
   final String notes;
@@ -28,6 +30,8 @@ class Device {
     required this.wattage,
     required this.wattageStandby,
     required this.frequency,
+    this.frequencyDays,
+    this.frequencyTimes,
     required this.timeOfUse,
     required this.priority,
     required this.notes,
@@ -43,6 +47,8 @@ class Device {
       wattage: json['wattage'],
       wattageStandby: json['wattageStandby'],
       frequency: FrequencyEnum.values.byName(json['frequency']),
+      frequencyDays: json['frequencyDays'],
+      frequencyTimes: json['frequencyTimes'],
       timeOfUse: json['timeOfUse'],
       priority: PriorityLevelEnum.values.byName(json['priority']),
       notes: json['notes'],
@@ -59,6 +65,8 @@ class Device {
       'wattage': wattage,
       'wattageStandby': wattageStandby,
       'frequency': frequency.name,
+      'frequencyDays': frequencyDays,
+      'frequencyTimes': frequencyTimes,
       'timeOfUse': timeOfUse,
       'priority': priority.name,
       'notes': notes,
@@ -74,6 +82,8 @@ class Device {
     int? wattage,
     int? wattageStandby,
     FrequencyEnum? frequency,
+    int? frequencyDays,
+    int? frequencyTimes,
     String? timeOfUse,
     PriorityLevelEnum? priority,
     String? notes,
@@ -87,6 +97,8 @@ class Device {
       wattage: wattage ?? this.wattage,
       wattageStandby: wattageStandby ?? this.wattageStandby,
       frequency: frequency ?? this.frequency,
+      frequencyDays: frequencyDays ?? this.frequencyDays,
+      frequencyTimes: frequencyTimes ?? this.frequencyTimes,
       timeOfUse: timeOfUse ?? this.timeOfUse,
       priority: priority ?? this.priority,
       notes: notes ?? this.notes,
