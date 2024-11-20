@@ -44,7 +44,10 @@ class _DevicesPageState extends State<DevicesPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    leading: Icon(device.type.icon),
+                    leading: Icon(
+                      device.type.icon,
+                      color: device.enabled ? Colors.green : Colors.red,
+                    ),
                     title: Text(device.name),
                     subtitle: Text(device.model),
                     onTap: () {
