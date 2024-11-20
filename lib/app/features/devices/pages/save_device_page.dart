@@ -424,24 +424,49 @@ class _SaveDevicePageState extends State<SaveDevicePage> {
                 ),
               ),
               const SizedBox(height: 15),
-              const Text("Nível de Prioridade"),
-              const SizedBox(height: 5),
-              DropdownButtonFormField<PriorityLevelEnum>(
-                items: PriorityLevelEnum.values.map((PriorityLevelEnum priority) {
-                  return DropdownMenuItem(
-                    value: priority,
-                    child: Row(
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(priority.icon, color: priority.color),
-                        const SizedBox(width: 10),
-                        Text(priority.readable),
+                        const Text("Nível de Prioridade"),
+                        const SizedBox(height: 5),
+                        DropdownButtonFormField<PriorityLevelEnum>(
+                          isExpanded: true,
+                          items: PriorityLevelEnum.values.map((PriorityLevelEnum priority) {
+                            return DropdownMenuItem(
+                              value: priority,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(priority.icon, color: priority.color),
+                                  const SizedBox(width: 10),
+                                  Text(priority.readable),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: store.setPriority,
+                          value: store.priority,
+                        )
                       ],
                     ),
-                  );
-                }).toList(),
-                onChanged: store.setPriority,
-                value: store.priority,
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Ativo"),
+                      const SizedBox(height: 5),
+                      Observer(
+                        builder: (_) => Switch(value: store.enabled, onChanged: store.setEnabled),
+                      ),
+                    ],
+                  )
+                ],
               ),
               const SizedBox(height: 15),
               const Text("Notas"),
