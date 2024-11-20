@@ -1,3 +1,4 @@
+import 'package:app/app/core/enum/comsumption_range_enum.dart';
 import 'package:app/app/core/enum/device_type_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
@@ -45,7 +46,7 @@ extension DeviceExtension on DeviceTypeEnum {
   }
 
   /// Retorna o ícone que representa o tipo de dispositivo.
-  /// 
+  ///
   /// - `DeviceTypeEnum.light`: Lâmpada
   /// - `DeviceTypeEnum.airconditioner`: Ar Condicionado
   /// - `DeviceTypeEnum.tv`: Televisão
@@ -86,13 +87,13 @@ extension DeviceExtension on DeviceTypeEnum {
 }
 
 /// Converte uma string em um tipo de dispositivo.
-/// 
+///
 /// **Parâmetros**:
 ///  - `name`: O nome do tipo de dispositivo.
-/// 
+///
 /// **Retorna**:
 /// - Um tipo de dispositivo correspondente ao nome fornecido.
-/// 
+///
 /// **Exemplo**:
 /// ```dart
 /// String name = 'Lâmpada';
@@ -130,16 +131,16 @@ DeviceTypeEnum string2Device(String name) {
 
 extension FrequencyExtension on FrequencyEnum {
   /// Retorna a frequência em formato legível.
-  /// 
+  ///
   /// - `FrequencyEnum.daily`: 'Diariamente'
   /// - `FrequencyEnum.weekly`: 'X vezes por semana'
   /// - `FrequencyEnum.monthly`: 'X vezes por mês'
   /// - `FrequencyEnum.custom`: 'X vezes a cada Y dias'
-  /// 
+  ///
   /// **Parâmetros**:
   ///    - `times`: O número de vezes que a ação é realizada em um período.
   ///    - `days`: O número de dias em que a ação é realizada.
-  /// 
+  ///
   /// **Exemplo**:
   /// ```dart
   /// FrequencyEnum.weekly.readable(times: '3'); // Output: '3 vezes por semana'
@@ -160,7 +161,7 @@ extension FrequencyExtension on FrequencyEnum {
 
 extension PriorityLevelExtension on PriorityLevelEnum {
   /// Retorna o nível de prioridade em formato legível.
-  /// 
+  ///
   /// - `PriorityLevelEnum.low`: 'Baixa'
   /// - `PriorityLevelEnum.medium`: 'Média'
   /// - `PriorityLevelEnum.high`: 'Alta'
@@ -179,7 +180,7 @@ extension PriorityLevelExtension on PriorityLevelEnum {
   }
 
   /// Retorna o ícone que representa o nível de prioridade.
-  /// 
+  ///
   /// - `PriorityLevelEnum.low`: Seta para baixo
   /// - `PriorityLevelEnum.medium`: Círculo
   /// - `PriorityLevelEnum.high`: Seta para cima
@@ -225,9 +226,9 @@ extension ShowSnackBar on BuildContext {
   ///
   /// **Parâmetros**:
   ///   - `message`: A mensagem a ser exibida no SnackBar.
-  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para 
+  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para
   /// `Icons.info`.
-  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para 
+  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para
   /// `Colors.red`.
   void showSnackBar({
     required String message,
@@ -257,10 +258,10 @@ extension ShowSnackBar on BuildContext {
   ///
   /// **Parâmetros**:
   ///   - `message`: A mensagem a ser exibida no SnackBar.
-  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para 
+  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para
   /// `Icons.error`.
   ///   - `iconColor`: A cor do ícone. Padrão para `Colors.white`.
-  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para 
+  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para
   /// `Colors.red`.
   void showSnackBarError({
     required String message,
@@ -286,16 +287,16 @@ extension ShowSnackBar on BuildContext {
 
   /// Mostra um SnackBar de sucesso, com uma mensagem e um ícone opcional.
   ///
-  /// Mostra um SnackBar na parte inferior da tela com uma mensagem de 
+  /// Mostra um SnackBar na parte inferior da tela com uma mensagem de
   /// sucesso.
   /// Você pode personalizar o ícone, a cor do ícone e a cor de fundo.
   ///
   /// **Parâmetros**:
   ///   - `message`: A mensagem a ser exibida no SnackBar.
-  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para 
+  ///   - `icon`: O ícone a ser exibido ao lado da mensagem. Padrão para
   /// `Icons.check_circle`.
   ///   - `iconColor`: A cor do ícone. Padrão para `Colors.white`.
-  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para 
+  ///   - `backgroundColor`: A cor de fundo do SnackBar. Padrão para
   /// `Colors.green`.
   void showSnackBarSuccess({
     required String message,
@@ -321,14 +322,14 @@ extension ShowSnackBar on BuildContext {
 }
 
 /// Converte uma string no formato 'HH:MM AM/PM' para um objeto `DateTime`.
-/// 
+///
 /// A parte de data do objeto `DateTime` é configurada como 1 de Janeiro de
 /// 2024.
-/// 
+///
 /// **Parâmetros**:
 ///   - `time`: Uma string representando o horário no formato 'HH:MM AM/PM'.
 /// - Retorna: Um objeto `DateTime` com o tempo especificado.
-/// 
+///
 /// **Exemplo**:
 /// ```dart
 /// DateTime dateTime = string2DateTime('02:30 PM');
@@ -337,11 +338,11 @@ extension ShowSnackBar on BuildContext {
 DateTime string2DateTime(String time) {
   bool isPM = time.contains('PM');
   time = time.replaceAll('AM', '').replaceAll('PM', '');
-  
+
   List<String> parts = time.split(':');
   int hour = int.parse(parts[0]);
   int minute = int.parse(parts[1]);
-  
+
   if (isPM) {
     hour += 12;
   }
@@ -349,22 +350,21 @@ DateTime string2DateTime(String time) {
   return DateTime(2024, 1, 1, hour, minute);
 }
 
-
 /// Compara duas strings de entrada e retorna uma lista de mapas contendo
 /// as palavras que diferem entre as duas strings em cada posição.
-/// 
+///
 /// Cada mapa na lista retornada contém duas chaves:
 /// - 'word1': A palavra da primeira string de entrada na posição atual.
 /// - 'word2': A palavra da segunda string de entrada na posição atual.
-/// 
+///
 /// Se uma das strings de entrada for mais curta que a outra, as palavras
 /// faltantes são representadas como strings vazias.
-/// 
+///
 /// **Parâmetros**:
 ///   - input1: A primeira string de entrada para comparar.
 ///   - input2: A segunda string de entrada para comparar.
 /// - Retorna: Uma lista de mapas contendo as palavras diferentes em cada posição.
-/// 
+///
 /// **Exemplo**:
 /// ```dart
 /// differencesBetween('hello world', 'hello there');
@@ -390,4 +390,34 @@ List<Map<String, dynamic>> differencesBetween(String input1, String input2) {
   }
 
   return result;
+}
+
+extension ComsumptionExtension on ComsumptionRangeEnum {
+  /// Retorna o tipo de dispositivo em formato legível.
+  /// 
+  /// - `ComsumptionRangeEnum.lastDay`: Último dia
+  /// - `ComsumptionRangeEnum.lastWeek`: Última semana
+  /// - `ComsumptionRangeEnum.lastMonth`: Último mês
+  /// - `ComsumptionRangeEnum.lastThreeMonths`: Últimos três meses
+  /// - `ComsumptionRangeEnum.lastSixMonths`: Últimos seis meses
+  /// - `ComsumptionRangeEnum.lastYear`: Último ano
+  /// - `ComsumptionRangeEnum.allTime`: Todo o tempo
+  String get readable {
+    switch (this) {
+      case ComsumptionRangeEnum.lastDay:
+        return 'Último dia';
+      case ComsumptionRangeEnum.lastWeek:
+        return 'Última semana';
+      case ComsumptionRangeEnum.lastMonth:
+        return 'Último mês';
+      case ComsumptionRangeEnum.lastThreeMonths:
+        return 'Últimos três meses';
+      case ComsumptionRangeEnum.lastSixMonths:
+        return 'Últimos seis meses';
+      case ComsumptionRangeEnum.lastYear:
+        return 'Último ano';
+      case ComsumptionRangeEnum.allTime:
+        return 'Todo o tempo';
+    }
+  }
 }
