@@ -20,4 +20,7 @@ abstract class TariffDao {
 
   @update
   Future<void> updateTariff(Tariff tariff);
+
+  @Query('DELETE FROM Tariff')
+  Future<void> deleteAllTariffs();
 }
