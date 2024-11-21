@@ -2,18 +2,21 @@ import 'package:app/app/core/converters/datetime_converter.dart';
 import 'package:app/app/core/entity/device.dart';
 import 'package:floor/floor.dart';
 
-@Entity(tableName: 'comsumption', foreignKeys: [
-  ForeignKey(
-    childColumns: ['device_id'],
-    parentColumns: ['id'],
-    entity: Device,
-    onDelete: ForeignKeyAction.cascade,
-  ),
-  // TODO: Add tariff foreign key
-])
+@Entity(
+  tableName: 'consumption',
+  foreignKeys: [
+    ForeignKey(
+      childColumns: ['device_id'],
+      parentColumns: ['id'],
+      entity: Device,
+      onDelete: ForeignKeyAction.cascade,
+    ),
+    // TODO: Add tariff foreign key
+  ],
+)
 @entity
 @TypeConverters([DateTimeConverter])
-class Comsumption {
+class Consumption {
   @PrimaryKey(autoGenerate: true)
   final int? id;
 
@@ -26,27 +29,27 @@ class Comsumption {
 
   final int totalActiveMinutes;
   final int totalStandbyMinutes;
-  final double totalComsumption;
+  final double totalConsumption;
   final double totalCost;
 
-  Comsumption({
+  Consumption({
     this.id,
     required this.deviceId,
     required this.date,
     required this.totalActiveMinutes,
     required this.totalStandbyMinutes,
-    required this.totalComsumption,
+    required this.totalConsumption,
     required this.totalCost,
   });
 
-  factory Comsumption.fromJson(Map<String, dynamic> json) {
-    return Comsumption(
+  factory Consumption.fromJson(Map<String, dynamic> json) {
+    return Consumption(
       id: json['id'],
       deviceId: json['deviceId'],
       date: DateTime.parse(json['date']),
       totalActiveMinutes: json['totalActiveMinutes'],
       totalStandbyMinutes: json['totalStandbyMinutes'],
-      totalComsumption: json['totalComsumption'],
+      totalConsumption: json['totalConsumption'],
       totalCost: json['totalCost'],
     );
   }
@@ -58,13 +61,13 @@ class Comsumption {
       'date': date.toIso8601String(),
       'totalActiveMinutes': totalActiveMinutes,
       'totalStandbyMinutes': totalStandbyMinutes,
-      'totalComsumption': totalComsumption,
+      'totalConsumption': totalConsumption,
       'totalCost': totalCost,
     };
   }
 
   @override
   String toString() {
-    return 'Comsumption{id: $id, deviceId: $deviceId, date: $date, totalActiveMinutes: $totalActiveMinutes, totalStandbyMinutes: $totalStandbyMinutes, totalComsumption: $totalComsumption, totalCost: $totalCost}';
+    return 'Consumption{id: $id, deviceId: $deviceId, date: $date, totalActiveMinutes: $totalActiveMinutes, totalStandbyMinutes: $totalStandbyMinutes, totalConsumption: $totalConsumption, totalCost: $totalCost}';
   }
 }

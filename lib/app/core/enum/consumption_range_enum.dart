@@ -1,4 +1,4 @@
-enum ComsumptionRangeEnum {
+enum ConsumptionRangeEnum {
   lastDay,
   lastWeek,
   lastMonth,
