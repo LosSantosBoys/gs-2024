@@ -106,7 +106,7 @@ abstract class TariffStoreBase with Store {
     double price = double.tryParse(priceAdjusted) ?? 0;
 
     try {
-      final tariff = Tariff(
+      Tariff tariff = Tariff(
         id: id != null ? int.tryParse(id) : null,
         kWhValue: price,
         flag: flag!,
@@ -134,6 +134,14 @@ abstract class TariffStoreBase with Store {
 
         if (context.mounted) {
           buildContext = context;
+        }
+
+        if (tariff.id == null) {
+          Tariff? lastTariff = await service.findLastTariff();
+
+          if (lastTariff != null) {
+            tariff = lastTariff;
+          }
         }
 
         // ignore: use_build_context_synchronously
