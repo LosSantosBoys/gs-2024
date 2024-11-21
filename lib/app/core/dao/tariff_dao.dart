@@ -23,4 +23,7 @@ abstract class TariffDao {
 
   @Query('DELETE FROM Tariff')
   Future<void> deleteAllTariffs();
+
+  @Query('SELECT * FROM Tariff ORDER BY id DESC LIMIT 1')
+  Future<Tariff?> findLastTariff();
 }
