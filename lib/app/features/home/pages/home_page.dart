@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
 
                                           double consumption = touchedSpot.y;
 
-                                          return LineTooltipItem('$consumption kWh', style);
+                                          return LineTooltipItem('${consumption.toStringAsFixed(2)} kWh', style);
                                         }).toList();
                                       },
                                     ),
@@ -415,6 +415,7 @@ class _HomePageState extends State<HomePage> {
                             }
 
                             int highestConsumption = consumptionsByDeviceType.values.reduce((a, b) => a > b ? a : b).ceil();
+                            List<DeviceTypeEnum> deviceTypes = consumptionsByDeviceType.keys.toList();
 
                             return BarChart(
                               BarChartData(
@@ -438,13 +439,18 @@ class _HomePageState extends State<HomePage> {
                                   bottomTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
-                                      getTitlesWidget: (value, meta) => Text(
-                                        DeviceTypeEnum.values[value.toInt()].readable,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                        ),
-                                      ),
+                                      getTitlesWidget: (value, meta) {
+                                        if (value.toInt() >= 0 && value.toInt() < deviceTypes.length) {
+                                          return Text(
+                                            deviceTypes[value.toInt()].readable,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                            ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
                                     ),
                                   ),
                                   leftTitles: AxisTitles(
