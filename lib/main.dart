@@ -5,6 +5,7 @@ import 'package:app/app/features/home/store/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:workmanager/workmanager.dart';
 
 @pragma("vm:entry-point")
@@ -15,7 +16,7 @@ void callbackDispatcher() {
     
     HomeStore store = Modular.get<HomeStore>();
 
-    store.saveConsumption();
+    store.saveConsumption(null);
 
     return Future.value(true);
   });
@@ -25,6 +26,8 @@ Future<void> main() async {
   await initializeSqlite();
 
   Intl.defaultLocale = 'pt_BR';
+  Intl.systemLocale = 'pt_BR';
+  initializeDateFormatting('pt_BR');
   WidgetsFlutterBinding.ensureInitialized();
 
   Workmanager().initialize(
