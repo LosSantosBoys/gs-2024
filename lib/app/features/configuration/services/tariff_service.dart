@@ -5,6 +5,7 @@ abstract class TariffService {
   Future<List<Tariff>> findAllTariffs();
   Future<Tariff?> findTariffById(int id);
   Future<Tariff?> findActiveTariff();
+  Future<Tariff?> findLastTariff();
   Future<void> insertTariff(Tariff tariff);
   Future<void> deleteTariff(Tariff tariff);
   Future<void> deleteAllTariffs();
@@ -114,6 +115,18 @@ class TariffServiceImpl implements TariffService {
 
       final tariffDao = database.tariffDao;
       await tariffDao.deleteAllTariffs();
+    } catch (e) {
+      rethrow;
+    }
+  }
+  
+  @override
+  Future<Tariff?> findLastTariff() async {
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
+      final tariffDao = database.tariffDao;
+      return await tariffDao.findLastTariff();
     } catch (e) {
       rethrow;
     }
