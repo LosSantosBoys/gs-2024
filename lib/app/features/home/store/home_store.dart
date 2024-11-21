@@ -1,11 +1,14 @@
 import 'package:app/app/core/entity/consumption.dart';
 import 'package:app/app/core/entity/device.dart';
+import 'package:app/app/core/entity/tariff.dart';
 import 'package:app/app/core/enum/consumption_range_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/util.dart';
+import 'package:app/app/features/configuration/services/tariff_service.dart';
 import 'package:app/app/features/devices/service/device_service.dart';
 import 'package:app/app/features/home/models/consumption_with_device.dart';
 import 'package:app/app/features/home/service/home_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 
@@ -16,9 +19,10 @@ class HomeStore = HomeStoreBase with _$HomeStore;
 abstract class HomeStoreBase with Store {
   HomeService service = Modular.get();
   DeviceService deviceService = Modular.get();
+  TariffService tariffService = Modular.get();
 
-  // TODO: Replace with tariff value
-  final double pricePerKwh = 0.75;
+  @observable
+  double pricePerKwh = 0.75;
 
   @observable
   ConsumptionRangeEnum consumptionRange = ConsumptionRangeEnum.lastDay;
@@ -45,42 +49,39 @@ abstract class HomeStoreBase with Store {
         totalConsumption += consumptionWithDevice.consumption.totalConsumption;
       }
       averageMonthlyConsumption = totalConsumption / consumptionsWithDevice.length;
+
+      if (averageMonthlyConsumption.isNaN) {
+        averageMonthlyConsumption = 0;
+      }
     } catch (e) {
       rethrow;
     }
   }
 
   @action
-  Future<void> getWeeklyConsumption() async {
+  Future<void> getWeeklyConsumptionAndCost() async {
     try {
       List<ConsumptionWithDevice> consumptionsWithDevice = await getConsumptionsByDateRange(
         ConsumptionRangeEnum.lastWeek,
       );
 
       double totalConsumption = 0;
-
-      for (ConsumptionWithDevice consumptionWithDevice in consumptionsWithDevice) {
-        totalConsumption += consumptionWithDevice.consumption.totalConsumption;
-      }
-      averageWeeklyConsumption = totalConsumption / consumptionsWithDevice.length;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @action
-  Future<void> getWeeklyCost() async {
-    try {
-      List<ConsumptionWithDevice> consumptionsWithDevice = await getConsumptionsByDateRange(
-        ConsumptionRangeEnum.lastWeek,
-      );
-
       double totalCost = 0;
 
       for (ConsumptionWithDevice consumptionWithDevice in consumptionsWithDevice) {
+        totalConsumption += consumptionWithDevice.consumption.totalConsumption;
         totalCost += consumptionWithDevice.consumption.totalCost;
       }
+      averageWeeklyConsumption = totalConsumption / consumptionsWithDevice.length;
       averageWeeklyCost = totalCost / consumptionsWithDevice.length;
+
+      if (averageWeeklyConsumption.isNaN) {
+        averageWeeklyConsumption = 0;
+      }
+
+      if (averageWeeklyCost.isNaN) {
+        averageWeeklyCost = 0;
+      }
     } catch (e) {
       rethrow;
     }
@@ -90,6 +91,19 @@ abstract class HomeStoreBase with Store {
   void setConsumptionRange(ConsumptionRangeEnum? range) {
     if (range != null) {
       consumptionRange = range;
+    }
+  }
+
+  @action
+  Future<void> getPricePerKwh() async {
+    try {
+      Tariff? tariff = await tariffService.findActiveTariff();
+
+      if (tariff != null) {
+        pricePerKwh = tariff.kWhValue;
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -146,9 +160,16 @@ abstract class HomeStoreBase with Store {
   }
 
   @action
-  Future<void> saveConsumption() async {
+  Future<void> saveConsumption(BuildContext? context) async {
     try {
       List<Device> enabledDevices = ObservableList.of(await deviceService.getEnabledDevices());
+      Tariff? tariff = await tariffService.findActiveTariff();
+
+      if (tariff == null) {
+        if (context != null && context.mounted) {
+          context.showSnackBarError(message: "Nenhuma tarifa ativa encontrada.");
+        }
+      }
 
       for (Device device in enabledDevices) {
         if (device.id == null) {
@@ -174,6 +195,7 @@ abstract class HomeStoreBase with Store {
 
         Consumption consumption = Consumption(
           deviceId: device.id!,
+          tariffId: tariff!.id!,
           date: DateTime.now(),
           totalActiveMinutes: activeMinutes,
           totalStandbyMinutes: standbyMinutes,
@@ -182,10 +204,11 @@ abstract class HomeStoreBase with Store {
         );
 
         await service.saveConsumption(consumption);
-        print(consumption);
       }
     } catch (e) {
-      rethrow;
+      if (context != null && context.mounted) {
+        context.showSnackBarError(message: "Erro ao salvar consumo. Tente novamente.");
+      }
     }
   }
 
