@@ -1,5 +1,6 @@
 import 'package:app/app/app_module.dart';
 import 'package:app/app/app_widget.dart';
+import 'package:app/sqlite_init.dart';
 import 'package:app/app/features/home/store/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -20,7 +21,9 @@ void callbackDispatcher() {
   });
 }
 
-void main() {
+Future<void> main() async {
+  await initializeSqlite();
+
   Intl.defaultLocale = 'pt_BR';
   WidgetsFlutterBinding.ensureInitialized();
 
