@@ -1,8 +1,9 @@
-import 'package:app/app/core/enum/comsumption_range_enum.dart';
+import 'package:app/app/core/enum/consumption_range_enum.dart';
 import 'package:app/app/core/enum/device_type_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension DeviceExtension on DeviceTypeEnum {
   /// Retorna o tipo de dispositivo em formato legível.
@@ -392,32 +393,49 @@ List<Map<String, dynamic>> differencesBetween(String input1, String input2) {
   return result;
 }
 
-extension ComsumptionExtension on ComsumptionRangeEnum {
+extension ConsumptionExtension on ConsumptionRangeEnum {
   /// Retorna o tipo de dispositivo em formato legível.
   /// 
-  /// - `ComsumptionRangeEnum.lastDay`: Último dia
-  /// - `ComsumptionRangeEnum.lastWeek`: Última semana
-  /// - `ComsumptionRangeEnum.lastMonth`: Último mês
-  /// - `ComsumptionRangeEnum.lastThreeMonths`: Últimos três meses
-  /// - `ComsumptionRangeEnum.lastSixMonths`: Últimos seis meses
-  /// - `ComsumptionRangeEnum.lastYear`: Último ano
-  /// - `ComsumptionRangeEnum.allTime`: Todo o tempo
+  /// - `ConsumptionRangeEnum.lastDay`: Último dia
+  /// - `ConsumptionRangeEnum.lastWeek`: Última semana
+  /// - `ConsumptionRangeEnum.lastMonth`: Último mês
+  /// - `ConsumptionRangeEnum.lastThreeMonths`: Últimos três meses
+  /// - `ConsumptionRangeEnum.lastSixMonths`: Últimos seis meses
+  /// - `ConsumptionRangeEnum.lastYear`: Último ano
+  /// - `ConsumptionRangeEnum.allTime`: Todo o tempo
   String get readable {
     switch (this) {
-      case ComsumptionRangeEnum.lastDay:
-        return 'Último dia';
-      case ComsumptionRangeEnum.lastWeek:
-        return 'Última semana';
-      case ComsumptionRangeEnum.lastMonth:
-        return 'Último mês';
-      case ComsumptionRangeEnum.lastThreeMonths:
-        return 'Últimos três meses';
-      case ComsumptionRangeEnum.lastSixMonths:
-        return 'Últimos seis meses';
-      case ComsumptionRangeEnum.lastYear:
-        return 'Último ano';
-      case ComsumptionRangeEnum.allTime:
+      case ConsumptionRangeEnum.lastDay:
+        return 'Diário';
+      case ConsumptionRangeEnum.lastWeek:
+        return 'Semanal';
+      case ConsumptionRangeEnum.lastMonth:
+        return 'Mensal';
+      case ConsumptionRangeEnum.lastThreeMonths:
+        return 'Trimestral';
+      case ConsumptionRangeEnum.lastSixMonths:
+        return 'Semestral';
+      case ConsumptionRangeEnum.lastYear:
+        return 'Anual';
+      case ConsumptionRangeEnum.allTime:
         return 'Todo o tempo';
     }
+  }
+}
+
+String formatDateBasedOnRange(DateTime date, ConsumptionRangeEnum range) {
+  switch (range) {
+    case ConsumptionRangeEnum.lastDay:
+      return DateFormat('HH:mm').format(date);
+    case ConsumptionRangeEnum.lastWeek:
+      return ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][date.weekday - 1];
+    case ConsumptionRangeEnum.lastMonth:
+      return DateFormat('dd/MM').format(date);
+    case ConsumptionRangeEnum.lastThreeMonths:
+    case ConsumptionRangeEnum.lastSixMonths:
+    case ConsumptionRangeEnum.lastYear:
+      return DateFormat('MM/yy').format(date);
+    case ConsumptionRangeEnum.allTime:
+      return "${date.year}";
   }
 }
