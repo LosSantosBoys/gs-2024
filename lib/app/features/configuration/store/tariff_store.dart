@@ -102,10 +102,13 @@ abstract class TariffStoreBase with Store {
       return;
     }
 
+    String priceAdjusted = pricePerKwh.text.trim().replaceAll(",", ".");
+    double price = double.tryParse(priceAdjusted) ?? 0;
+
     try {
       final tariff = Tariff(
         id: id != null ? int.tryParse(id) : null,
-        kWhValue: double.parse(pricePerKwh.text.trim()),
+        kWhValue: price,
         flag: flag!,
         month: monthDateTime!,
         validityStart: validityStartDateTime!,
