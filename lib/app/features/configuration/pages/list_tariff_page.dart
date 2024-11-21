@@ -1,7 +1,10 @@
+import 'package:app/app/core/entity/tariff.dart';
+import 'package:app/app/core/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:app/app/features/configuration/store/tariff_store.dart';
+import 'package:intl/intl.dart';
 
 class ListTariffsPage extends StatefulWidget {
   const ListTariffsPage({super.key});
@@ -12,18 +15,6 @@ class ListTariffsPage extends StatefulWidget {
 
 class _ListTariffsPageState extends State<ListTariffsPage> {
   final TariffStore store = Modular.get<TariffStore>();
-
-  final Map<String, Color> flagColors = {
-    'Verde': Colors.green,
-    'Amarela': Colors.yellow,
-    'Vermelha': Colors.red.shade700,
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    store.loadTariffs();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,35 +33,36 @@ class _ListTariffsPageState extends State<ListTariffsPage> {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             itemCount: store.tariffs.length,
             itemBuilder: (context, index) {
-              final tariff = store.tariffs[index];
+              final Tariff tariff = store.tariffs[index];
+
+              String month = DateFormat("MMMM/yyyy").format(tariff.month);
+              String validityStart = DateFormat("dd/MM/yyyy").format(tariff.validityStart);
+              String validityEnd = DateFormat("dd/MM/yyyy").format(tariff.validityEnd);
+
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
                   leading: Icon(
                     Icons.flag,
-                    color: flagColors[tariff.flag]
+                    color: tariff.flag.color(),
                   ),
-                  title: Text("R\$ ${tariff.kWhValue.toStringAsFixed(2)} por kWh"),
+                  title: Text("R\$ ${tariff.kWhValue.toStringAsFixed(2)} kWh"),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Bandeira: ${tariff.flag}"),
-                      Text("Mês: ${tariff.month}"),
-                      Text("Vigência: ${tariff.validityStart} - ${tariff.validityEnd}"),
+                      Text("Bandeira: ${tariff.flag.readable()}"),
+                      Text("Mês: $month"),
+                      Text("Vigência: $validityStart - $validityEnd"),
                     ],
                   ),
                   trailing: Switch(
                     value: tariff.isActive,
-                    onChanged: (bool value) {
-                      store.toggleTariffActive(tariff, value);
-                    },
+                    onChanged: (bool value) => store.toggleTariffActive(tariff, value),
                   ),
-                  onTap: () {
-                    Modular.to.pushNamed('/tariffs/edit', arguments: tariff);
-                  },
+                  onTap: () => Modular.to.pushNamed('${tariff.id}'),
                 ),
               );
             },
