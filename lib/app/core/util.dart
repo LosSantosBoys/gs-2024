@@ -424,6 +424,14 @@ extension ConsumptionExtension on ConsumptionRangeEnum {
   }
 }
 
+/// Formata uma data com base no intervalo de consumo.
+/// 
+/// **Parâmetros**:
+///   - `date`: A data a ser formatada.
+///   - `range`: O intervalo de consumo.
+/// 
+/// **Retorna**:
+///   - Uma string formatada com base no intervalo de consumo.
 String formatDateBasedOnRange(DateTime date, ConsumptionRangeEnum range) {
   switch (range) {
     case ConsumptionRangeEnum.lastDay:
@@ -442,6 +450,11 @@ String formatDateBasedOnRange(DateTime date, ConsumptionRangeEnum range) {
 }
 
 extension FlagExtension on FlagEnum {
+  /// Retorna a flag em formato legível.
+  /// 
+  /// - `FlagEnum.green`: 'Verde'
+  /// - `FlagEnum.yellow`: 'Amarela'
+  /// - `FlagEnum.red`: 'Vermelha'
   String readable() {
     switch (this) {
       case FlagEnum.green:
@@ -453,6 +466,11 @@ extension FlagExtension on FlagEnum {
     }
   }
 
+  /// Retorna a cor associada com a flag.
+  /// 
+  /// - `FlagEnum.green`: Verde
+  /// - `FlagEnum.yellow`: Amarelo
+  /// - `FlagEnum.red`: Vermelho
   Color color() {
     switch (this) {
       case FlagEnum.green:

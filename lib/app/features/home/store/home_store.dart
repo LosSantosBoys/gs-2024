@@ -36,6 +36,7 @@ abstract class HomeStoreBase with Store {
   @observable
   double averageWeeklyCost = 0;
 
+  /// Obtém o consumo e custo diário.
   @action
   Future<void> getMonthlyConsumption() async {
     try {
@@ -58,6 +59,7 @@ abstract class HomeStoreBase with Store {
     }
   }
 
+  /// Obtém o consumo e custo semanal.
   @action
   Future<void> getWeeklyConsumptionAndCost() async {
     try {
@@ -87,6 +89,10 @@ abstract class HomeStoreBase with Store {
     }
   }
 
+  /// Define o intervalo de consumo de energia.
+  /// 
+  /// **Parâmetros**:
+  ///   - `range`: Intervalo de consumo de energia.
   @action
   void setConsumptionRange(ConsumptionRangeEnum? range) {
     if (range != null) {
@@ -94,6 +100,7 @@ abstract class HomeStoreBase with Store {
     }
   }
 
+  /// Obtém o preço do kWh.
   @action
   Future<void> getPricePerKwh() async {
     try {
@@ -107,6 +114,13 @@ abstract class HomeStoreBase with Store {
     }
   }
 
+  /// Retorna os consumos de energia por um intervalo de datas.
+  /// 
+  /// **Parâmetros**:
+  ///   - `range`: Intervalo de datas.
+  /// 
+  /// **Retorno**:
+  ///   - Lista de consumos de energia com dispositivos.
   @action
   Future<List<ConsumptionWithDevice>> getConsumptionsByDateRange(ConsumptionRangeEnum range) async {
     try {
@@ -159,6 +173,10 @@ abstract class HomeStoreBase with Store {
     }
   }
 
+  /// Salva o consumo de energia.
+  /// 
+  /// **Parâmetros**:
+  ///   - `context`: BuildContext.
   @action
   Future<void> saveConsumption(BuildContext? context) async {
     try {
