@@ -22,9 +22,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    store.getWeeklyConsumption();
+    store.getWeeklyConsumptionAndCost();
     store.getMonthlyConsumption();
-    store.getWeeklyCost();
+    store.getPricePerKwh();
   }
 
   @override
@@ -34,13 +34,16 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Início'),
         actions: [
           IconButton(
-            onPressed: store.saveConsumption,
+            onPressed: () async {
+              await store.saveConsumption(context);
+              setState(() {});
+            },
             icon: const Icon(Icons.refresh),
             tooltip: "Atualizar",
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => Modular.to.pushNamed('/configurations/'),
+            onPressed: () => Modular.to.pushNamed('/configuration/'),
             tooltip: "Configurações",
           ),
         ],
@@ -50,6 +53,12 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            ListTile(
+              title: const Text("Dispositivos"),
+              onTap: () => Modular.to.pushNamed('/devices/'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+            const SizedBox(height: 10),
             SizedBox(
               height: 350,
               child: Card(
@@ -409,7 +418,20 @@ class _HomePageState extends State<HomePage> {
 
                             return BarChart(
                               BarChartData(
-                                barTouchData: BarTouchData(enabled: true),
+                                barTouchData: BarTouchData(
+                                  enabled: true,
+                                  touchTooltipData: BarTouchTooltipData(
+                                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                      return BarTooltipItem(
+                                        "${rod.toY.toStringAsFixed(2)} kWh",
+                                        const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                                 gridData: const FlGridData(show: false),
                                 titlesData: FlTitlesData(
                                   show: true,
@@ -463,12 +485,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            ListTile(
-              title: const Text("Dispositivos"),
-              onTap: () => Modular.to.pushNamed('/devices/'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-            )
           ],
         ),
       ),
