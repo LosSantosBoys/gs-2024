@@ -1,5 +1,6 @@
 import 'package:app/app/core/enum/consumption_range_enum.dart';
 import 'package:app/app/core/enum/device_type_enum.dart';
+import 'package:app/app/core/enum/flag_enum.dart';
 import 'package:app/app/core/enum/frequency_enum.dart';
 import 'package:app/app/core/enum/priority_level_enum.dart';
 import 'package:flutter/material.dart';
@@ -437,5 +438,29 @@ String formatDateBasedOnRange(DateTime date, ConsumptionRangeEnum range) {
       return DateFormat('MM/yy').format(date);
     case ConsumptionRangeEnum.allTime:
       return "${date.year}";
+  }
+}
+
+extension FlagExtension on FlagEnum {
+  String readable() {
+    switch (this) {
+      case FlagEnum.green:
+        return 'Verde';
+      case FlagEnum.yellow:
+        return 'Amarela';
+      case FlagEnum.red:
+        return 'Vermelha';
+    }
+  }
+
+  Color color() {
+    switch (this) {
+      case FlagEnum.green:
+        return Colors.green;
+      case FlagEnum.yellow:
+        return Colors.yellow;
+      case FlagEnum.red:
+        return Colors.red.shade700;
+    }
   }
 }
