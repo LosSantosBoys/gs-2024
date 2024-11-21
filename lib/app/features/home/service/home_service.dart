@@ -1,116 +1,116 @@
-import 'package:app/app/core/dao/comsumption_dao.dart';
-import 'package:app/app/core/entity/comsumption.dart';
+import 'package:app/app/core/dao/consumption_dao.dart';
+import 'package:app/app/core/entity/consumption.dart';
 import 'package:app/app/core/database.dart';
 
 abstract class HomeService {
-  Future<void> saveComsumption(Comsumption comsumption);
-  Future<void> deleteComsumption(int id);
-  Future<void> updateComsumption(Comsumption comsumption);
-  Future<Comsumption?> getComsumption(int id);
-  Future<List<Comsumption>> getAllComsumptions();
-  Future<List<Comsumption>> getComsumptionsByDeviceId(int deviceId);
-  Future<List<Comsumption>> getComsumptionsByDate(DateTime date);
-  Future<List<Comsumption>> getComsumptionsByDateRange(DateTime startDate, DateTime endDate);
+  Future<void> saveConsumption(Consumption consumption);
+  Future<void> deleteConsumption(int id);
+  Future<void> updateConsumption(Consumption consumption);
+  Future<Consumption?> getConsumption(int id);
+  Future<List<Consumption>> getAllConsumptions();
+  Future<List<Consumption>> getConsumptionsByDeviceId(int deviceId);
+  Future<List<Consumption>> getConsumptionsByDate(DateTime date);
+  Future<List<Consumption>> getConsumptionsByDateRange(DateTime startDate, DateTime endDate);
 }
 
 class HomeServiceImpl implements HomeService {
   @override
-  Future<void> deleteComsumption(int id) async {
+  Future<void> deleteConsumption(int id) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      final Comsumption? comsumption = await comsumptionDao.findComsumptionById(id);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      final Consumption? consumption = await consumptionDao.findConsumptionById(id);
 
-      if (comsumption == null) {
+      if (consumption == null) {
         return;
       }
 
-      await comsumptionDao.deleteComsumption(comsumption);
+      await consumptionDao.deleteConsumption(consumption);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Comsumption>> getAllComsumptions() async {
+  Future<List<Consumption>> getAllConsumptions() async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      return await comsumptionDao.findAllComsumptions();
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      return await consumptionDao.findAllConsumptions();
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<Comsumption?> getComsumption(int id) async {
+  Future<Consumption?> getConsumption(int id) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      return await comsumptionDao.findComsumptionById(id);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      return await consumptionDao.findConsumptionById(id);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Comsumption>> getComsumptionsByDate(DateTime date) async {
+  Future<List<Consumption>> getConsumptionsByDate(DateTime date) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      return await comsumptionDao.findComsumptionsByDate(date);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      return await consumptionDao.findConsumptionsByDate(date);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Comsumption>> getComsumptionsByDateRange(DateTime startDate, DateTime endDate) async {
+  Future<List<Consumption>> getConsumptionsByDateRange(DateTime startDate, DateTime endDate) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      return await comsumptionDao.findComsumptionsByDateRange(startDate, endDate);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      return await consumptionDao.findConsumptionsByDateRange(startDate, endDate);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Comsumption>> getComsumptionsByDeviceId(int deviceId) async {
+  Future<List<Consumption>> getConsumptionsByDeviceId(int deviceId) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      return await comsumptionDao.findComsumptionsByDeviceId(deviceId);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      return await consumptionDao.findConsumptionsByDeviceId(deviceId);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> saveComsumption(Comsumption comsumption) async {
+  Future<void> saveConsumption(Consumption consumption) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      await comsumptionDao.insertComsumption(comsumption);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      await consumptionDao.insertConsumption(consumption);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> updateComsumption(Comsumption comsumption) async {
+  Future<void> updateConsumption(Consumption consumption) async {
     try {
       final AppDatabase database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-      final ComsumptionDao comsumptionDao = database.comsumptionDao;
-      await comsumptionDao.updateComsumption(comsumption);
+      final ConsumptionDao consumptionDao = database.consumptionDao;
+      await consumptionDao.updateConsumption(consumption);
     } catch (e) {
       rethrow;
     }
