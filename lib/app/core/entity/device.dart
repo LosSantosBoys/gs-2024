@@ -20,6 +20,7 @@ class Device {
   final String timeOfUse;
   final PriorityLevelEnum priority;
   final String notes;
+  final bool enabled;
 
   Device({
     this.id,
@@ -35,6 +36,7 @@ class Device {
     required this.timeOfUse,
     required this.priority,
     required this.notes,
+    required this.enabled,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class Device {
       timeOfUse: json['timeOfUse'],
       priority: PriorityLevelEnum.values.byName(json['priority']),
       notes: json['notes'],
+      enabled: true,
     );
   }
 
@@ -70,6 +73,7 @@ class Device {
       'timeOfUse': timeOfUse,
       'priority': priority.name,
       'notes': notes,
+      'enabled': enabled,
     };
   }
 
@@ -87,6 +91,7 @@ class Device {
     String? timeOfUse,
     PriorityLevelEnum? priority,
     String? notes,
+    bool? enabled,
   }) {
     return Device(
       id: id ?? this.id,
@@ -102,6 +107,7 @@ class Device {
       timeOfUse: timeOfUse ?? this.timeOfUse,
       priority: priority ?? this.priority,
       notes: notes ?? this.notes,
+      enabled: enabled ?? this.enabled,
     );
   }
 }

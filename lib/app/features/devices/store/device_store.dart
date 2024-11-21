@@ -46,6 +46,9 @@ abstract class DeviceStoreBase with Store {
   PriorityLevelEnum priority = PriorityLevelEnum.low;
 
   @observable
+  bool enabled = true;
+
+  @observable
   ObservableList<Device> devices = ObservableList<Device>();
 
   @observable
@@ -56,6 +59,11 @@ abstract class DeviceStoreBase with Store {
     if (value != null) {
       type = value;
     }
+  }
+
+  @action
+  void setEnabled(bool value) {
+    enabled = value;
   }
 
   @action
@@ -139,6 +147,7 @@ abstract class DeviceStoreBase with Store {
         timeOfUse: beginEnd.text,
         priority: priority,
         notes: notes.text,
+        enabled: enabled,
       );
 
       String message = "Dispositivo salvo com sucesso.";
@@ -250,6 +259,7 @@ abstract class DeviceStoreBase with Store {
     end = null;
     priority = PriorityLevelEnum.low;
     notes.clear();
+    enabled = true;
   }
 
   @action

@@ -21,14 +21,15 @@ class AppWidget extends StatelessWidget {
           ),
         ),
         appBarTheme: const AppBarTheme(
-            titleTextStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Color(0xFF1F2024),
-            ),
-            titleSpacing: 24,
-            backgroundColor: Colors.white,
-            elevation: 0),
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Color(0xFF1F2024),
+          ),
+          titleSpacing: 24,
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
         textTheme: GoogleFonts.interTextTheme(
           Theme.of(context).textTheme,
         ),
@@ -107,6 +108,14 @@ class AppWidget extends StatelessWidget {
             borderSide: const BorderSide(
               color: ThemeColors.errorDarkest,
             ),
+          ),
+        ),
+        cardTheme: CardTheme(
+          color: ThemeColors.neutralLightLight,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide.none,
           ),
         ),
         scaffoldBackgroundColor: Colors.white,

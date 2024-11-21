@@ -7,6 +7,7 @@ abstract class DeviceService {
   Future<void> deleteDevice(int id);
   Future<void> updateDevice(Device device);
   Future<List<Device>> getDevices();
+  Future<List<Device>> getEnabledDevices();
   Future<Device?> getDevice(int id);
 }
 
@@ -64,7 +65,7 @@ class DeviceServiceImpl implements DeviceService {
       rethrow;
     }
   }
-  
+
   @override
   Future<Device?> getDevice(int id) async {
     try {
@@ -72,6 +73,18 @@ class DeviceServiceImpl implements DeviceService {
 
       final deviceDao = database.deviceDao;
       return await deviceDao.findDeviceById(id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Device>> getEnabledDevices() async {
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
+      final deviceDao = database.deviceDao;
+      return await deviceDao.findEnabledDevices();
     } catch (e) {
       rethrow;
     }
