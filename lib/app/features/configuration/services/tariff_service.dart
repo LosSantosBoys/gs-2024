@@ -7,7 +7,9 @@ abstract class TariffService {
   Future<Tariff?> findActiveTariff();
   Future<void> insertTariff(Tariff tariff);
   Future<void> deleteTariff(Tariff tariff);
+  Future<void> deleteAllTariffs();
   Future<void> updateTariff(Tariff tariff);
+  Future<void> toggleTariffActive(Tariff tariff);
 }
 
 class TariffServiceImpl implements TariffService {
@@ -73,11 +75,45 @@ class TariffServiceImpl implements TariffService {
 
   @override
   Future<void> updateTariff(Tariff tariff) async {
-    try{
+    try {
       final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
       final tariffDao = database.tariffDao;
       await tariffDao.updateTariff(tariff);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> toggleTariffActive(Tariff tariff) async {
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
+      final tariffDao = database.tariffDao;
+
+      List<Tariff> tariffs = await tariffDao.findAllTariffs();
+
+      for (Tariff t in tariffs) {
+        if (t.id != tariff.id) {
+          t = t.copyWith(isActive: false);
+          await tariffDao.updateTariff(t);
+        }
+      }
+
+      await tariffDao.updateTariff(tariff);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteAllTariffs() async {
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
+      final tariffDao = database.tariffDao;
+      await tariffDao.deleteAllTariffs();
     } catch (e) {
       rethrow;
     }
