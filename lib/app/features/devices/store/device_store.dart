@@ -154,10 +154,10 @@ abstract class DeviceStoreBase with Store {
 
       if (device.id == null) {
         // Save device
-        service.saveDevice(device);
+        await service.saveDevice(device);
       } else {
         // Update device
-        service.updateDevice(device);
+        await service.updateDevice(device);
         message = "Dispositivo atualizado com sucesso.";
       }
 
