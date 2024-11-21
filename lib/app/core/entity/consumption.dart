@@ -1,5 +1,6 @@
 import 'package:app/app/core/converters/datetime_converter.dart';
 import 'package:app/app/core/entity/device.dart';
+import 'package:app/app/core/entity/tariff.dart';
 import 'package:floor/floor.dart';
 
 @Entity(
@@ -11,7 +12,12 @@ import 'package:floor/floor.dart';
       entity: Device,
       onDelete: ForeignKeyAction.cascade,
     ),
-    // TODO: Add tariff foreign key
+    ForeignKey(
+      childColumns: ['tariff_id'],
+      parentColumns: ['id'],
+      entity: Tariff,
+      onDelete: ForeignKeyAction.cascade,
+    ),
   ],
 )
 @entity
@@ -23,7 +29,8 @@ class Consumption {
   @ColumnInfo(name: 'device_id')
   final int deviceId;
 
-  // TODO: Add tariff field
+  @ColumnInfo(name: 'tariff_id')
+  final int tariffId;
 
   final DateTime date;
 
@@ -35,6 +42,7 @@ class Consumption {
   Consumption({
     this.id,
     required this.deviceId,
+    required this.tariffId,
     required this.date,
     required this.totalActiveMinutes,
     required this.totalStandbyMinutes,
@@ -46,6 +54,7 @@ class Consumption {
     return Consumption(
       id: json['id'],
       deviceId: json['deviceId'],
+      tariffId: json['tariffId'],
       date: DateTime.parse(json['date']),
       totalActiveMinutes: json['totalActiveMinutes'],
       totalStandbyMinutes: json['totalStandbyMinutes'],
@@ -58,6 +67,7 @@ class Consumption {
     return {
       'id': id,
       'deviceId': deviceId,
+      'tariffId': tariffId,
       'date': date.toIso8601String(),
       'totalActiveMinutes': totalActiveMinutes,
       'totalStandbyMinutes': totalStandbyMinutes,
@@ -68,6 +78,6 @@ class Consumption {
 
   @override
   String toString() {
-    return 'Consumption{id: $id, deviceId: $deviceId, date: $date, totalActiveMinutes: $totalActiveMinutes, totalStandbyMinutes: $totalStandbyMinutes, totalConsumption: $totalConsumption, totalCost: $totalCost}';
+    return 'Consumption{id: $id, date: $date, totalActiveMinutes: $totalActiveMinutes, totalStandbyMinutes: $totalStandbyMinutes, totalConsumption: $totalConsumption, totalCost: $totalCost}';
   }
 }
