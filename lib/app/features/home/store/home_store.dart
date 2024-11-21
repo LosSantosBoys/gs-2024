@@ -222,6 +222,8 @@ abstract class HomeStoreBase with Store {
         );
 
         await service.saveConsumption(consumption);
+        await getWeeklyConsumptionAndCost();
+        await getMonthlyConsumption();
       }
     } catch (e) {
       if (context != null && context.mounted) {
