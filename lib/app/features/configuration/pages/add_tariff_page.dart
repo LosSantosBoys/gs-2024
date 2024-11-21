@@ -1,6 +1,7 @@
 import 'package:app/app/core/enum/flag_enum.dart';
 import 'package:app/app/core/util.dart';
 import 'package:app/app/features/configuration/store/tariff_store.dart';
+import 'package:app/app/features/configuration/widgets/currency_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -64,7 +65,7 @@ class _SaveTariffPageState extends State<SaveTariffPage> {
               const SizedBox(height: 5),
               TextFormField(
                 controller: store.pricePerKwh,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                inputFormatters: [CurrencyInputFormatter()],
                 keyboardType: TextInputType.number,
                 validator: (String? value) {
                   if (value?.isEmpty ?? true) {
