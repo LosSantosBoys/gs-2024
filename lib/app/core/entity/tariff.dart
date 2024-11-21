@@ -1,4 +1,5 @@
 import 'package:app/app/core/converters/datetime_converter.dart';
+import 'package:app/app/core/enum/flag_enum.dart';
 import 'package:floor/floor.dart';
 
 @entity
@@ -8,9 +9,9 @@ class Tariff {
   final int? id;
 
   final double kWhValue;
-  final String flag;
-  final String month;
+  final FlagEnum flag;
 
+  final DateTime month;
   final DateTime validityStart;
   final DateTime validityEnd;
   final DateTime createdAt;
@@ -34,8 +35,8 @@ class Tariff {
     return Tariff(
       id: json['id'],
       kWhValue: json['kWhValue'],
-      flag: json['flag'],
-      month: json['month'],
+      flag: FlagEnum.values.byName(json['flag']),
+      month: DateTime.parse(json['month']),
       validityStart: DateTime.parse(json['validityStart']),
       validityEnd: DateTime.parse(json['validityEnd']),
       createdAt: DateTime.parse(json['createdAt']),
@@ -48,8 +49,8 @@ class Tariff {
     return {
       'id': id,
       'kWhValue': kWhValue,
-      'flag': flag,
-      'month': month,
+      'flag': flag.name,
+      'month': month.toIso8601String(),
       'validityStart': validityStart.toIso8601String(),
       'validityEnd': validityEnd.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -61,8 +62,8 @@ class Tariff {
   Tariff copyWith({
     int? id,
     double? kWhValue,
-    String? flag,
-    String? month,
+    FlagEnum? flag,
+    DateTime? month,
     DateTime? validityStart,
     DateTime? validityEnd,
     DateTime? createdAt,
