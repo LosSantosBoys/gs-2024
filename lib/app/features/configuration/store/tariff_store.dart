@@ -255,6 +255,8 @@ abstract class TariffStoreBase with Store {
       if (context.mounted) {
         context.showSnackBarSuccess(message: "Todas as tarifas foram excluídas com sucesso.");
       }
+
+      Modular.to.pop();
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Erro ao excluir todas as tarifas: $e');
