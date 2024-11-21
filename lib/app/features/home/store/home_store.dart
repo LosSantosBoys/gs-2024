@@ -90,7 +90,7 @@ abstract class HomeStoreBase with Store {
   }
 
   /// Define o intervalo de consumo de energia.
-  /// 
+  ///
   /// **Parâmetros**:
   ///   - `range`: Intervalo de consumo de energia.
   @action
@@ -115,10 +115,10 @@ abstract class HomeStoreBase with Store {
   }
 
   /// Retorna os consumos de energia por um intervalo de datas.
-  /// 
+  ///
   /// **Parâmetros**:
   ///   - `range`: Intervalo de datas.
-  /// 
+  ///
   /// **Retorno**:
   ///   - Lista de consumos de energia com dispositivos.
   @action
@@ -174,7 +174,7 @@ abstract class HomeStoreBase with Store {
   }
 
   /// Salva o consumo de energia.
-  /// 
+  ///
   /// **Parâmetros**:
   ///   - `context`: BuildContext.
   @action
